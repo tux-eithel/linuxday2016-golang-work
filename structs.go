@@ -20,6 +20,12 @@ type (
 		URL    string
 		Status int
 	}
+
+	// RowLine is just a wrapper function for channel and goroutine
+	RowLine struct {
+		Num    int
+		RowStr string
+	}
 )
 
 // newMapRegexp map a regexp with it's params
