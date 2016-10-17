@@ -4,10 +4,10 @@ import (
 	"bufio"
 	"errors"
 	"flag"
-	"fmt"
 	"log"
 	"os"
 	"regexp"
+	"runtime"
 	"sync"
 )
 
@@ -44,27 +44,26 @@ func main() {
 
 	// a sync.WaitGroup define a counter for a number of goroutines that need to be waited
 	waitRoutine := &sync.WaitGroup{}
+	waitRoutine.Add(runtime.NumCPU())
+
+	// create a channel to send RowLine
+	chRowLine := make(chan *RowLine)
+
+	// how many routine ? for now cpunumber is ok
+	for j := 0; j < runtime.NumCPU(); j++ {
+		go FromLineToStruct(chRowLine, reLine, waitRoutine)
+	}
 
 	// start to scan the file
 	logLines := bufio.NewScanner(logFile)
 	i := 1
 	for logLines.Scan() {
 
-		// add 1 to the current counter
-		waitRoutine.Add(1)
-
-		go func(index int, line string) {
-
-			// first thing, at the function end remember to unlock the the waitRoutine
-			defer waitRoutine.Done()
-
-			structLine, err := NewLogLineStruct(reLine.FindStringSubmatch(line), reLine.SubexpNames())
-			if err != nil {
-				log.Println(i, " - ", err)
-			} else {
-				fmt.Println(structLine.Status)
-			}
-		}(i, logLines.Text())
+		// send the struct to the channel
+		chRowLine <- &RowLine{
+			Num:    i,
+			RowStr: logLines.Text(),
+		}
 
 		i++
 		if i == 100 {
