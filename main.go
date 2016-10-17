@@ -71,6 +71,9 @@ func main() {
 		}
 	}
 
+	// broadcast all routines that data is finished
+	close(chRowLine)
+
 	// wait all the goroutine to end
 	waitRoutine.Wait()
 

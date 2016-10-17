@@ -12,10 +12,16 @@ func FromLineToStruct(input chan *RowLine, reLine *regexp.Regexp, wait *sync.Wai
 	defer wait.Done()
 
 	var line *RowLine
+	var ok bool
 
 	for {
 
-		line = <-input
+		line, ok = <-input
+
+		// if !ok, channel has been closed, so we can return
+		if !ok {
+			return
+		}
 
 		_, err := NewLogLineStruct(reLine.FindStringSubmatch(line.RowStr), reLine.SubexpNames())
 		if err != nil {
