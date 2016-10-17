@@ -7,7 +7,7 @@ import (
 )
 
 // FromLineToStruct builds a LogLineStruct or print an error
-func FromLineToStruct(input chan *RowLine, reLine *regexp.Regexp, wait *sync.WaitGroup) {
+func FromLineToStruct(input chan *RowLine, reLine regexp.Regexp, wait *sync.WaitGroup) {
 
 	defer wait.Done()
 

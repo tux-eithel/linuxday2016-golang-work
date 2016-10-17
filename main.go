@@ -51,7 +51,7 @@ func main() {
 
 	// how many routine ? for now cpunumber is ok
 	for j := 0; j < runtime.NumCPU(); j++ {
-		go FromLineToStruct(chRowLine, reLine, waitRoutine)
+		go FromLineToStruct(chRowLine, *reLine, waitRoutine)
 	}
 
 	// start to scan the file
