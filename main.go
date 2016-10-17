@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"flag"
+	"fmt"
 	"log"
 	"os"
 	"regexp"
@@ -44,14 +45,20 @@ func main() {
 	logLines := bufio.NewScanner(logFile)
 	i := 1
 	for logLines.Scan() {
-		_, err := NewLogLineStruct(reLine.FindStringSubmatch(logLines.Text()), reLine.SubexpNames())
-		if err != nil {
-			log.Println(i, " - ", err)
-		} else {
-			//fmt.Println(logLine)
-		}
+
+		go func(index int, line string) {
+			structLine, err := NewLogLineStruct(reLine.FindStringSubmatch(line), reLine.SubexpNames())
+			if err != nil {
+				log.Println(i, " - ", err)
+			} else {
+				fmt.Println(structLine.Status)
+			}
+		}(i, logLines.Text())
 
 		i++
+		if i == 100 {
+			break
+		}
 	}
 
 }
