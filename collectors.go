@@ -33,7 +33,7 @@ func NewCollectDateTimeRequest() *CollectDateTimeRequests {
 
 // Run runs the an infinity loop for make things with data
 // Every tick prints the current status of data
-func (c *CollectDateTimeRequests) Run(tick chan time.Time) {
+func (c *CollectDateTimeRequests) Run(tick <-chan time.Time) {
 
 	var line *LogLineStruct
 	var ok bool
