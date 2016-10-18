@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"runtime"
 	"sync"
+	"time"
 )
 
 const (
@@ -33,6 +34,13 @@ func main() {
 
 	// compile the regexp
 	reLine := regexp.MustCompile(logFormat)
+
+	waitCollector := &sync.WaitGroup{}
+	waitCollector.Add(len(GlobalCollectors))
+
+	for _, collector := range GlobalCollectors {
+		go collector.Run(time.Tick(5*time.Second), waitCollector)
+	}
 
 	// try to open the file
 	logFile, err := openFile(inputFile)
@@ -66,7 +74,7 @@ func main() {
 		}
 
 		i++
-		if i == 100 {
+		if i == 200000 {
 			break
 		}
 	}
@@ -76,6 +84,13 @@ func main() {
 
 	// wait all the goroutine to end
 	waitRoutine.Wait()
+
+	// broadcast all the collector
+	for _, collector := range GlobalCollectors {
+		close(collector.GetChannel())
+	}
+
+	waitCollector.Wait()
 
 }
 
