@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"strings"
+	"regexp"
 	"sync"
 	"time"
 )
@@ -109,6 +109,8 @@ func (c *CollectUrl) Run(tick <-chan time.Time, wait *sync.WaitGroup) {
 	var line *LogLineStruct
 	var ok bool
 
+	re := regexp.MustCompile("(wp-|mp4|feed)")
+
 	for {
 
 		select {
@@ -118,7 +120,7 @@ func (c *CollectUrl) Run(tick <-chan time.Time, wait *sync.WaitGroup) {
 				return
 			}
 
-			if line.Method == "GET" && !strings.Contains(line.URL, "wp-content") {
+			if line.Method == "GET" && !re.MatchString(line.URL) {
 				c.CountData[line.URL]++
 			}
 
