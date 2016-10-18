@@ -23,11 +23,15 @@ func FromLineToStruct(input chan *RowLine, reLine regexp.Regexp, wait *sync.Wait
 			return
 		}
 
-		_, err := NewLogLineStruct(reLine.FindStringSubmatch(line.RowStr), reLine.SubexpNames())
+		structLine, err := NewLogLineStruct(reLine.FindStringSubmatch(line.RowStr), reLine.SubexpNames())
 		if err != nil {
 			log.Println(line.Num, " - ", err)
 		} else {
-			// fmt.Println(structLine.Status)
+
+			for _, collector := range GlobalCollectors {
+				collector.GetChannel() <- structLine
+			}
+
 		}
 
 	}
