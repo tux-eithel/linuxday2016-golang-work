@@ -1,5 +1,14 @@
 package main
 
+import (
+	"fmt"
+	"time"
+)
+
+const (
+	LenChannels = 100
+)
+
 type (
 	// Date is a candy struct for string
 	Date string
@@ -17,29 +26,36 @@ type (
 // NewCollectDateTimeRequest initializes the struct
 func NewCollectDateTimeRequest() *CollectDateTimeRequests {
 	return &CollectDateTimeRequests{
-		Input:     make(chan *LogLineStruct),
+		Input:     make(chan *LogLineStruct, LenChannels),
 		CountData: make(map[Date]HoursHits),
 	}
 }
 
 // Run runs the an infinity loop for make things with data
-func (c *CollectDateTimeRequests) Run() {
+// Every tick prints the current status of data
+func (c *CollectDateTimeRequests) Run(tick chan time.Time) {
 
 	var line *LogLineStruct
 	var ok bool
 
 	for {
 
-		line, ok = <-c.Input
-		if !ok {
-			return
-		}
+		select {
 
-		date := Date(line.Date.Format("2006-01-02")) // cast to Date format
-		if _, ok := c.CountData[date]; !ok {
-			c.CountData[date] = make(HoursHits)
+		case line, ok = <-c.Input:
+			if !ok {
+				return
+			}
+
+			date := Date(line.Date.Format("2006-01-02")) // cast to Date format
+			if _, ok := c.CountData[date]; !ok {
+				c.CountData[date] = make(HoursHits)
+			}
+			c.CountData[date][line.Date.Format("15")]++
+
+		case <-tick:
+			fmt.Println(c.CountData)
 		}
-		c.CountData[date][line.Date.Format("15")]++
 
 	}
 
