@@ -21,6 +21,12 @@ type (
 		Input     chan *LogLineStruct
 		CountData map[Date]HoursHits
 	}
+
+	// CollectUrl collects urls and the most visited urls
+	CollectUrl struct {
+		Input     chan *LogLineStruct
+		CountData map[string]int
+	}
 )
 
 // NewCollectDateTimeRequest initializes the struct
@@ -63,5 +69,45 @@ func (c *CollectDateTimeRequests) Run(tick <-chan time.Time) {
 
 // GetChannel returns the channel where send data
 func (c *CollectDateTimeRequests) GetChannel() chan *LogLineStruct {
+	return c.Input
+}
+
+func NewCollectUrl() *CollectUrl {
+	return &CollectUrl{
+		Input:     make(chan *LogLineStruct, LenChannels),
+		CountData: make(map[string]int),
+	}
+}
+
+// Run runs the an infinity loop for make things with data
+// Every tick prints the current status of data
+func (c *CollectUrl) Run(tick <-chan time.Time) {
+
+	var line *LogLineStruct
+	var ok bool
+
+	for {
+
+		select {
+
+		case line, ok = <-c.Input:
+			if !ok {
+				return
+			}
+
+			if line.Method == "GET" {
+				c.CountData[line.URL]++
+			}
+
+		case <-tick:
+			fmt.Println(c.CountData)
+		}
+
+	}
+
+}
+
+// GetChannel returns the channel where send data
+func (c *CollectUrl) GetChannel() chan *LogLineStruct {
 	return c.Input
 }
