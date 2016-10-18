@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sync"
 	"time"
 )
 
@@ -27,6 +28,14 @@ type (
 		Input     chan *LogLineStruct
 		CountData map[string]int
 	}
+
+	// Collector defines a generic collector
+	// A collector has a run function to receive the data
+	// end expone a channel where data will be sent
+	Collector interface {
+		Run(<-chan time.Time, *sync.WaitGroup)
+		GetChannel() chan *LogLineStruct
+	}
 )
 
 // NewCollectDateTimeRequest initializes the struct
@@ -39,7 +48,9 @@ func NewCollectDateTimeRequest() *CollectDateTimeRequests {
 
 // Run runs the an infinity loop for make things with data
 // Every tick prints the current status of data
-func (c *CollectDateTimeRequests) Run(tick <-chan time.Time) {
+func (c *CollectDateTimeRequests) Run(tick <-chan time.Time, wait *sync.WaitGroup) {
+
+	defer wait.Done()
 
 	var line *LogLineStruct
 	var ok bool
@@ -81,7 +92,9 @@ func NewCollectUrl() *CollectUrl {
 
 // Run runs the an infinity loop for make things with data
 // Every tick prints the current status of data
-func (c *CollectUrl) Run(tick <-chan time.Time) {
+func (c *CollectUrl) Run(tick <-chan time.Time, wait *sync.WaitGroup) {
+
+	defer wait.Done()
 
 	var line *LogLineStruct
 	var ok bool
