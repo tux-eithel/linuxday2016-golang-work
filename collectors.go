@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 )
@@ -117,7 +118,7 @@ func (c *CollectUrl) Run(tick <-chan time.Time, wait *sync.WaitGroup) {
 				return
 			}
 
-			if line.Method == "GET" {
+			if line.Method == "GET" && !strings.Contains(line.URL, "wp-content") {
 				c.CountData[line.URL]++
 			}
 
