@@ -13,8 +13,10 @@ const (
 var GlobalCollectors []Collector
 
 func init() {
-	GlobalCollectors = make([]Collector, 2)
-	GlobalCollectors = append(GlobalCollectors, NewCollectDateTimeRequest(), NewCollectUrl())
+	GlobalCollectors = []Collector{
+		NewCollectDateTimeRequest(),
+		NewCollectUrl(),
+	}
 }
 
 type (
