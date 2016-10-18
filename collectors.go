@@ -125,7 +125,7 @@ func (c *CollectUrl) Run(tick <-chan time.Time, wait *sync.WaitGroup) {
 			}
 
 		case <-tick:
-			fmt.Println(c.CountData)
+			fmt.Println(TopHits(c.CountData, 10))
 		}
 
 	}
