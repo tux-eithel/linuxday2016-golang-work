@@ -10,6 +10,13 @@ const (
 	LenChannels = 100
 )
 
+var GlobalCollectors []Collector
+
+func init() {
+	GlobalCollectors = make([]Collector, 2)
+	GlobalCollectors = append(GlobalCollectors, NewCollectDateTimeRequest(), NewCollectUrl())
+}
+
 type (
 	// Date is a candy struct for string
 	Date string
