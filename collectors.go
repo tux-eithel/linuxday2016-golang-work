@@ -10,6 +10,9 @@ type (
 	// Month is a candy struct for string
 	Month string
 
+	// Url is candy struct for string
+	Url string
+
 	// HoursHits is a candy struct to keep hits for every hour
 	HoursHits map[string]int
 
@@ -17,6 +20,12 @@ type (
 	CollectDateTimeRequests struct {
 		Input     chan LogLineStruct
 		CountData map[Month]HoursHits
+	}
+
+	// CollectUrl collects urls and the most visited urls
+	CollectUrl struct {
+		Input     chan LogLineStruct
+		CountData map[Url]int
 	}
 )
 
@@ -62,5 +71,41 @@ func (c *CollectDateTimeRequests) Run() {
 
 // GetChannel returns the channel where send data
 func (c *CollectDateTimeRequests) GetChannel() chan LogLineStruct {
+	return c.Input
+}
+
+// NewCollectUrl initializes the struct
+func NewCollectUrl() *CollectUrl {
+	return &CollectUrl{
+		Input:     make(chan LogLineStruct, LenChannels),
+		CountData: make(map[Url]int),
+	}
+}
+
+// Run runs the an infinity loop for make things with data
+func (c *CollectUrl) Run() {
+
+	var line LogLineStruct
+	var ok bool
+
+	re := regexp.MustCompile(ExcludeRegex)
+
+	for {
+
+		line, ok = <-c.Input
+		if !ok {
+			return
+		}
+
+		if line.Method == "GET" && line.URL != "/" && !re.MatchString(line.URL) {
+			c.CountData[Url(line.URL)]++
+		}
+
+	}
+
+}
+
+// GetChannel returns the channel where send data
+func (c *CollectUrl) GetChannel() chan LogLineStruct {
 	return c.Input
 }
