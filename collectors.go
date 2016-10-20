@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"regexp"
 	"time"
 )
@@ -36,7 +35,7 @@ type (
 	// A collector has a run function to receive the data
 	// end expone a channel where data will be sent
 	Collector interface {
-		Run(<-chan time.Time)
+		Run(<-chan time.Time, ChannelInterface)
 		GetChannel() chan LogLineStruct
 	}
 )
@@ -66,7 +65,7 @@ func NewCollectDateTimeRequest() *CollectDateTimeRequests {
 }
 
 // Run runs the an infinity loop for make things with data
-func (c *CollectDateTimeRequests) Run(tick <-chan time.Time) {
+func (c *CollectDateTimeRequests) Run(tick <-chan time.Time, out ChannelInterface) {
 
 	var line LogLineStruct
 	var ok bool
@@ -91,7 +90,8 @@ func (c *CollectDateTimeRequests) Run(tick <-chan time.Time) {
 			}
 
 		case <-tick:
-			fmt.Println("date-time", len(c.CountData))
+			out <- len(c.CountData)
+
 		}
 
 	}
@@ -112,7 +112,7 @@ func NewCollectUrl() *CollectUrl {
 }
 
 // Run runs the an infinity loop for make things with data
-func (c *CollectUrl) Run(tick <-chan time.Time) {
+func (c *CollectUrl) Run(tick <-chan time.Time, out ChannelInterface) {
 
 	var line LogLineStruct
 	var ok bool
@@ -132,7 +132,7 @@ func (c *CollectUrl) Run(tick <-chan time.Time) {
 			}
 
 		case <-tick:
-			fmt.Println("url-hit", len(c.CountData))
+			out <- len(c.CountData)
 
 		}
 	}
