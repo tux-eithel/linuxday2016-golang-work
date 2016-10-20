@@ -4,11 +4,13 @@ import (
 	"bufio"
 	"errors"
 	"flag"
+	"fmt"
 	"log"
 	"os"
 	"regexp"
 	"runtime"
 	"sync"
+	"time"
 )
 
 const (
@@ -42,6 +44,10 @@ func main() {
 	// at the end close the file
 	defer logFile.Close()
 
+	for _, collector := range GlobalCollectors {
+		go collector.Run(time.Tick(3 * time.Second))
+	}
+
 	// a sync.WaitGroup define a counter for a number of goroutines that need to be waited
 	waitRoutine := &sync.WaitGroup{}
 	waitRoutine.Add(runtime.NumCPU())
@@ -66,7 +72,7 @@ func main() {
 		}
 
 		i++
-		if i == 100 {
+		if i == 1000 {
 			break
 		}
 	}
@@ -76,6 +82,10 @@ func main() {
 
 	// wait all the goroutine to end
 	waitRoutine.Wait()
+
+	fmt.Print("\n\n parsing finito !!\n\n")
+
+	select {}
 
 }
 
