@@ -44,6 +44,7 @@ func main() {
 	// at the end close the file
 	defer logFile.Close()
 
+	go GlobalDispatcher.Run()
 	for _, collector := range GlobalCollectors {
 		go collector.Run(time.Tick(3*time.Second), GlobalDispatcher.InputChannel)
 	}

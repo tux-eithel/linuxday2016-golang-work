@@ -90,7 +90,7 @@ func (c *CollectDateTimeRequests) Run(tick <-chan time.Time, out ChannelInterfac
 			}
 
 		case <-tick:
-			out <- len(c.CountData)
+			out <- PreparePoints(c.CountData)
 
 		}
 
@@ -132,7 +132,7 @@ func (c *CollectUrl) Run(tick <-chan time.Time, out ChannelInterface) {
 			}
 
 		case <-tick:
-			out <- len(c.CountData)
+			out <- TopHits(c.CountData, 15)
 
 		}
 	}
