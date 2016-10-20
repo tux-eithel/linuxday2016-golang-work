@@ -45,7 +45,7 @@ func main() {
 	defer logFile.Close()
 
 	for _, collector := range GlobalCollectors {
-		go collector.Run(time.Tick(3 * time.Second))
+		go collector.Run(time.Tick(3*time.Second), GlobalDispatcher.InputChannel)
 	}
 
 	// a sync.WaitGroup define a counter for a number of goroutines that need to be waited
