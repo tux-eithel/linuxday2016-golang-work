@@ -47,7 +47,7 @@ func PreparePoints(mapDateTime map[Month]HoursHits) []Point {
 		y, _ := strconv.Atoi(string(month))
 		for time, hits := range hourhits {
 
-			r := hits * 15 / 2000
+			r := hits * 15 / 1000
 			if r == 0 {
 				continue
 			}
@@ -56,7 +56,7 @@ func PreparePoints(mapDateTime map[Month]HoursHits) []Point {
 			points = append(points, Point{
 				X: x,
 				Y: y,
-				R: hits * 15 / 2000,
+				R: r,
 			})
 		}
 	}
