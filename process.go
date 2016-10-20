@@ -28,6 +28,7 @@ func FromLineToStruct(input chan *RowLine, reLine regexp.Regexp, wait *sync.Wait
 			log.Println(line.Num, " - ", err)
 		} else {
 			for _, chanel := range GlobalCollectors {
+				// we are going to pass a new struct!!
 				chanel.GetChannel() <- *structLine
 			}
 		}
