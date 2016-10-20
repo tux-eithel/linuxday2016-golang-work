@@ -30,12 +30,31 @@ type (
 		Input     chan LogLineStruct
 		CountData map[Url]int
 	}
+
+	// Collector defines a generic collector
+	// A collector has a run function to receive the data
+	// end expone a channel where data will be sent
+	Collector interface {
+		Run(<-chan time.Time)
+		GetChannel() chan LogLineStruct
+	}
 )
 
 var (
 	// skyp generic pages in wordpress
 	ExcludeRegex = "(wp-|mp4|feed|xmlrpc|all|css|sitemap.xml|downloads|" + regexp.QuoteMeta("/?s=") + ")"
+
+	GlobalCollectors []Collector
 )
+
+func init() {
+
+	GlobalCollectors = []Collector{
+		NewCollectDateTimeRequest(),
+		NewCollectUrl(),
+	}
+
+}
 
 // NewCollectDateTimeRequest initializes the struct
 func NewCollectDateTimeRequest() *CollectDateTimeRequests {
