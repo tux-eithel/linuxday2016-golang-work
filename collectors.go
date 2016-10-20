@@ -2,6 +2,10 @@ package main
 
 import "regexp"
 
+const (
+	LenChannels = 100
+)
+
 type (
 	// Month is a candy struct for string
 	Month string
@@ -24,7 +28,7 @@ var (
 // NewCollectDateTimeRequest initializes the struct
 func NewCollectDateTimeRequest() *CollectDateTimeRequests {
 	return &CollectDateTimeRequests{
-		Input:     make(chan LogLineStruct),
+		Input:     make(chan LogLineStruct, LenChannels),
 		CountData: make(map[Month]HoursHits),
 	}
 }
