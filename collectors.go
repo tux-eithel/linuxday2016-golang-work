@@ -1,6 +1,9 @@
 package main
 
-import "regexp"
+import (
+	"regexp"
+	"time"
+)
 
 const (
 	LenChannels = 100
@@ -43,7 +46,7 @@ func NewCollectDateTimeRequest() *CollectDateTimeRequests {
 }
 
 // Run runs the an infinity loop for make things with data
-func (c *CollectDateTimeRequests) Run() {
+func (c *CollectDateTimeRequests) Run(tick <-chan time.Time) {
 
 	var line LogLineStruct
 	var ok bool
@@ -83,7 +86,7 @@ func NewCollectUrl() *CollectUrl {
 }
 
 // Run runs the an infinity loop for make things with data
-func (c *CollectUrl) Run() {
+func (c *CollectUrl) Run(tick <-chan time.Time) {
 
 	var line LogLineStruct
 	var ok bool
