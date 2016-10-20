@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"regexp"
 	"time"
 )
@@ -74,17 +75,23 @@ func (c *CollectDateTimeRequests) Run(tick <-chan time.Time) {
 
 	for {
 
-		line, ok = <-c.Input
-		if !ok {
-			return
-		}
+		select {
 
-		if line.Method == "GET" && !re.MatchString(line.URL) {
-			date := Month(line.Date.Format("01")) // cast to Month format
-			if _, ok := c.CountData[date]; !ok {
-				c.CountData[date] = make(HoursHits)
+		case line, ok = <-c.Input:
+			if !ok {
+				return
 			}
-			c.CountData[date][line.Date.Format("15")]++
+
+			if line.Method == "GET" && !re.MatchString(line.URL) {
+				date := Month(line.Date.Format("01")) // cast to Month format
+				if _, ok := c.CountData[date]; !ok {
+					c.CountData[date] = make(HoursHits)
+				}
+				c.CountData[date][line.Date.Format("15")]++
+			}
+
+		case <-tick:
+			fmt.Println("date-time", len(c.CountData))
 		}
 
 	}
@@ -114,15 +121,20 @@ func (c *CollectUrl) Run(tick <-chan time.Time) {
 
 	for {
 
-		line, ok = <-c.Input
-		if !ok {
-			return
-		}
+		select {
+		case line, ok = <-c.Input:
+			if !ok {
+				return
+			}
 
-		if line.Method == "GET" && line.URL != "/" && !re.MatchString(line.URL) {
-			c.CountData[Url(line.URL)]++
-		}
+			if line.Method == "GET" && line.URL != "/" && !re.MatchString(line.URL) {
+				c.CountData[Url(line.URL)]++
+			}
 
+		case <-tick:
+			fmt.Println("url-hit", len(c.CountData))
+
+		}
 	}
 
 }
