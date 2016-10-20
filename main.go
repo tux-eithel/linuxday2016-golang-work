@@ -4,11 +4,16 @@ import (
 	"bufio"
 	"errors"
 	"flag"
+	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"regexp"
 	"runtime"
 	"sync"
+	"time"
+
+	"github.com/gorilla/websocket"
 )
 
 const (
@@ -42,6 +47,11 @@ func main() {
 	// at the end close the file
 	defer logFile.Close()
 
+	go GlobalDispatcher.Run()
+	for _, collector := range GlobalCollectors {
+		go collector.Run(time.Tick(3*time.Second), GlobalDispatcher.InputChannel)
+	}
+
 	// a sync.WaitGroup define a counter for a number of goroutines that need to be waited
 	waitRoutine := &sync.WaitGroup{}
 	waitRoutine.Add(runtime.NumCPU())
@@ -54,28 +64,60 @@ func main() {
 		go FromLineToStruct(chRowLine, *reLine, waitRoutine)
 	}
 
-	// start to scan the file
-	logLines := bufio.NewScanner(logFile)
-	i := 1
-	for logLines.Scan() {
+	go func() {
+		// start to scan the file
+		logLines := bufio.NewScanner(logFile)
+		i := 1
+		for logLines.Scan() {
 
-		// send the struct to the channel
-		chRowLine <- &RowLine{
-			Num:    i,
-			RowStr: logLines.Text(),
+			// send the struct to the channel
+			chRowLine <- &RowLine{
+				Num:    i,
+				RowStr: logLines.Text(),
+			}
+
+			i++
+			if i == 1000 {
+				//break
+			}
 		}
 
-		i++
-		if i == 100 {
-			break
-		}
+		// broadcast all routines that data is finished
+		close(chRowLine)
+
+		// wait all the goroutine to end
+		waitRoutine.Wait()
+
+		fmt.Print("\n\n parsing finito !!\n\n")
+
+	}()
+
+	// websocket stuff
+	upgrader := websocket.Upgrader{
+		CheckOrigin: func(r *http.Request) bool { return true },
 	}
+	http.HandleFunc("/stats", func(w http.ResponseWriter, r *http.Request) {
+		conn, err := upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			log.Println(err)
+			return
+		}
 
-	// broadcast all routines that data is finished
-	close(chRowLine)
+		webData := GlobalDispatcher.GetChannel()
 
-	// wait all the goroutine to end
-	waitRoutine.Wait()
+		if webData == nil {
+			return
+		}
+
+		var i interface{}
+		for {
+			i = <-webData
+			conn.WriteJSON(i)
+		}
+
+	})
+
+	http.ListenAndServe(":8080", nil)
 
 }
 
