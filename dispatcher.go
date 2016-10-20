@@ -13,6 +13,11 @@ type (
 		InputChannel   ChannelInterface
 		OutputChannels []ChannelInterface
 	}
+
+	TypeResponse struct {
+		Name string
+		Data interface{}
+	}
 )
 
 var GlobalDispatcher *Dispatcher
