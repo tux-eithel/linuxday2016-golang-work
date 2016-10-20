@@ -60,7 +60,7 @@ func (d *Dispatcher) GetChannel() ChannelInterface {
 	defer d.Unlock()
 
 	for i, channel := range d.OutputChannels {
-		if channel != nil {
+		if channel == nil {
 			d.OutputChannels[i] = make(ChannelInterface)
 			return d.OutputChannels[i]
 		}
