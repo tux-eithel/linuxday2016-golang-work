@@ -45,7 +45,7 @@ server.receive = function (jsonObj) {
 };
 
 function MonthFromInt(value) {
-    switch(value) {
+    switch (value) {
         case 1:
             return "Gennaio";
         case 2:
@@ -117,24 +117,25 @@ window.onload = function () {
         type: 'bubble',
         data: DataDateRequestChart,
         options: {
-            tooltips:{
+            tooltips: {
                 callbacks: {
-                    label: function(tooltipItem, data) {
-					var datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
-					var dataPoint = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-					return datasetLabel + ': (' + dataPoint.x + ', ' + dataPoint.y + ', ' + Math.round(dataPoint.r*1000/15) + ')';
-				}
+                    label: function (tooltipItem, data) {
+                        var datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
+                        var dataPoint = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                        return datasetLabel + ': (' + dataPoint.x + ', ' + MonthFromInt(dataPoint.y) + ', ' + Math.round(dataPoint.r * 1000 / 15) + ')';
+                    }
                 }
             },
             title: {
                 display: true,
                 text: 'Visite Ore - Mesi',
-                fontSize: 18
+                fontSize: 18,
+                padding: 50
             },
             legend: {
                 display: false,
             },
-            scales: {                
+            scales: {
                 xAxes: [
                     {
                         scaleLabel: {
@@ -143,7 +144,9 @@ window.onload = function () {
                         },
                         ticks: {
                             stepSize: 1,
-                            autoSkip: false
+                            autoSkip: false,
+                            min: -1,
+                            max: 24
                         }
                     }
                 ],
@@ -156,9 +159,11 @@ window.onload = function () {
                         ticks: {
                             stepSize: 1,
                             autoSkip: false,
-                            callback: function(value) {
+                            callback: function (value) {
                                 return MonthFromInt(value)
-                            }
+                            },
+                            min: -1,
+                            max: 12
                         },
                     }
                 ]
