@@ -1,0 +1,69 @@
+espressione regolare: 
+
+tag v1
+
+^(?P<remote_addr>.+) (?P<gzip_ratio>.+) ` +
+		`(?P<remote_user>.+) \[(?P<time_local>.+)\] "(?P<request>.+)" ` +
+		`(?P<status>.+) (?P<bytes_sent>.+) "(?P<http_referer>.*)" "(?P<http_user_agent>.*)"$
+
+lanciare il programma e misurare il tempo
+
+
+
+tag v1.1
+
+a gouroutine per ogni riga
+
+
+
+tag v1.2
+
+introdurre sync.WaitGroup
+
+far notare che stiamo usando delle funzioni sull'oggetto "reLine" condivise tra multiple routines
+
+questa non è buona soluzione e pure nodejs ha gli stessi problemi
+
+
+
+tag v2
+
+introdurre il concetto di canale e di routine che comunicano (fan-out)
+
+spiegare perché risponde con un bel "fatal error: all goroutines are asleep - deadlock!"
+
+
+
+tag v2.1
+
+risolvere deadlock
+
+
+
+tag v2.2
+
+parlare che potremmo migliorare ancora di più il codice, non sherando l'oggetto regexp
+
+
+
+tag v3
+
+Introduzione del primo collettore come strutture dati alle quali inviare le info.
+
+Introdurre il secondo collettore
+
+Introdurre l'interfaccia comune tra le strutture
+
+creare la variabile globale contente i collettori
+
+
+
+v 3.2
+
+lanciare tutti i collettori e mostrare un esempio
+
+
+
+v 3.3
+
+filtrare i risultati e fare un funzione per avere solo i TOP 10 risultati

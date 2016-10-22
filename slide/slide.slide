@@ -1,0 +1,185 @@
+GO
+A new refreshing language (Workshop)
+22 Oct 2016
+
+
+Cristian Pavan
+(some kind of) Web Developer
+tux.eithel@gmail.com
+@tux_eithel
+
+* How to follow the workshop
+
+**
+**
+
+- You need to have Go installed in your system
+- All the source code is in this repo [[https://github.com/tux-eithel/linuxday2016-golang-work][https://github.com/tux-eithel/linuxday2016-golang-work]].
+
+
+
+* Install Go
+
+In order to install Go do:
+
+- download the right version of tar.gz here [[https://golang.org/dl/][https://golang.org/dl/]]
+- extract the archive inside your home directory
+- create the _workspace_ directories
+
+	mkdir -p $HOME/projectGo/{pkg,bin,src}
+
+- add in your `.profile` (or `.bashrc` or `.zshenv`) this lines
+
+	export GOROOT="$HOME/go"			   // directory where tar.gz has been extracted
+	export PATH="$GOROOT/bin:$PATH"		// add go executables to PATH
+	
+	export GOPATH="$HOME/projectGo"		// export the worspace directory
+	export PATH="GOPATH/bin:$PATH"		 // add packages executables to PATH
+
+Now you are ready to `go` `get`, `go` `build`, etc...
+
+
+
+* v1
+
+**
+**
+
+- read input file from command line
+- open the file
+- regexp file's lines
+- create a new struct to save the current line
+- parse all the lines and check errors
+
+ git clone --branch v1 https://github.com/tux-eithel/linuxday2016-golang-work
+
+
+
+* v1: next
+
+**
+**
+
+- use more routine to process input file
+
+ git checkout v1.1
+
+**
+**
+
+- wait all the gorutines 
+
+ git checkout v1.2
+
+* v2
+
+**
+**
+
+- use channel
+- create a new struct to share data using channel
+- create a new function to consume channel
+
+ git checkout v2
+
+
+* v2: next
+
+**
+**
+
+- remove deadlock
+
+ git checkout v2.1
+
+**
+**
+
+- performance
+
+ git checkout v2.2
+
+
+* v2: schema
+
+.image tag2.png
+
+
+* v3
+
+**
+**
+
+- new structs for aggregate data: collectors
+- buffered channel
+- interface
+- select statement
+
+ git checkout v3
+
+
+* v3: next
+
+**
+**
+
+- initialize collectors
+- pass data to collectors
+- program doesn't exit
+
+ git checkout v3.1
+
+* v3: schema
+
+.image tag3.png
+
+* v4
+
+**
+**
+
+- create a new struct to receive all elaborated data
+
+ git checkout v4
+
+
+* v4: next
+
+**
+**
+
+- utils functions to sort data a limit output
+- pass data to dispatcher
+
+ go checkout v4.1
+
+* v4: schema
+
+.image tag4.png _ 1200
+
+* v5
+
+**
+**
+
+- introduce websocket
+
+ go get -u github.com/gorilla/websocket
+
+- create a new struct for Front End
+
+ git checkout v5
+
+
+* v5: schema
+
+.image tag5.png _ 1000
+
+* v6
+
+**
+**
+
+- html and js using Chart.js
+
+ git checkout v6.1
