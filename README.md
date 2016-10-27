@@ -8,3 +8,8 @@ Slide to follow this workshop are [here](https://go-talks.appspot.com/github.com
 ### Run the workshop
 
 `go run *.go -f log_file.log`
+
+
+### Demo
+
+![Demo Workshop](/tag_v6.1-gif?raw=true)
