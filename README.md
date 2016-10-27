@@ -12,4 +12,4 @@ Slide to follow this workshop are [here](https://go-talks.appspot.com/github.com
 
 ### Demo
 
-![Demo Workshop](/tag_v6.1-gif?raw=true)
+![Demo Workshop](/tag_v6.1.gif?raw=true)
